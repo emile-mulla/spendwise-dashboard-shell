@@ -15,15 +15,13 @@
   --color-text-primary: #0f172a;
   --color-text-secondary: #475569;
 
-  --shadow-card: 0 2px 8px rgba(15, 23, 42, 0.05);
-  --shadow-card-active: 0 10px 22px rgba(15, 23, 42, 0.12);
+  --shadow-card: 0 2px 8px rgba(15, 23, 42, 0.06);
+  --shadow-card-hover: 0 10px 20px rgba(15, 23, 42, 0.12);
   --radius-sm: 8px;
   --radius-md: 12px;
   --radius-lg: 16px;
-  --motion-fast: 180ms;
 }
 
-/* Stretch Goal: Override only :root variables for dark color scheme */
 @media (prefers-color-scheme: dark) {
   :root {
     --color-brand: #2dd4bf;
@@ -40,7 +38,7 @@
     --color-text-secondary: #94a3b8;
 
     --shadow-card: 0 2px 10px rgba(0, 0, 0, 0.35);
-    --shadow-card-active: 0 12px 24px rgba(0, 0, 0, 0.55);
+    --shadow-card-hover: 0 12px 24px rgba(0, 0, 0, 0.55);
   }
 }
 
@@ -94,7 +92,7 @@ a {
 }
 
 /* ==========================================================================
-   4. Sidebar Navigation (Flexbox inside items & stack)
+   4. Sidebar Navigation (Flexbox)
    ========================================================================== */
 .sidebar {
   background-color: var(--color-surface);
@@ -134,7 +132,6 @@ a {
 .brand-name {
   font-weight: 700;
   font-size: 1.05rem;
-  color: var(--color-text-primary);
 }
 
 .brand-tag {
@@ -158,7 +155,7 @@ a {
   color: var(--color-text-secondary);
   font-weight: 500;
   font-size: 0.925rem;
-  transition: background-color var(--motion-fast) ease, color var(--motion-fast) ease;
+  transition: background-color 180ms ease, color 180ms ease;
 }
 
 .nav-item:hover,
@@ -197,7 +194,6 @@ a {
 
 .meta-value {
   font-size: 0.85rem;
-  color: var(--color-text-primary);
 }
 
 /* ==========================================================================
@@ -223,7 +219,6 @@ a {
 .header-titles h1 {
   font-size: 1.4rem;
   font-weight: 700;
-  color: var(--color-text-primary);
 }
 
 .subtitle {
@@ -260,11 +255,10 @@ a {
 .pill-value {
   font-size: 0.95rem;
   font-weight: 700;
-  color: var(--color-text-primary);
 }
 
 /* ==========================================================================
-   6. Category Cards (Flexbox content + Micro-interactions <= 250ms)
+   6. Category Cards (Flexbox + 180ms Hover & Focus-Visible Micro-interactions)
    ========================================================================== */
 .category-card {
   background-color: var(--color-surface);
@@ -276,13 +270,13 @@ a {
   flex-direction: column;
   justify-content: space-between;
   gap: 0.85rem;
-  transition: transform var(--motion-fast) ease, box-shadow var(--motion-fast) ease, border-color var(--motion-fast) ease;
+  transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease;
 }
 
 .category-card:hover,
 .category-card:focus-visible {
   transform: translateY(-3px);
-  box-shadow: var(--shadow-card-active);
+  box-shadow: var(--shadow-card-hover);
   border-color: var(--color-brand);
   outline: 2px solid var(--color-brand);
   outline-offset: 2px;
@@ -298,7 +292,6 @@ a {
 .category-badge {
   font-weight: 600;
   font-size: 0.95rem;
-  color: var(--color-text-primary);
 }
 
 .status-pill {
@@ -321,7 +314,6 @@ a {
 .spent-amount {
   font-size: 1.45rem;
   font-weight: 700;
-  color: var(--color-text-primary);
 }
 
 .budget-limit {
@@ -335,10 +327,13 @@ a {
 }
 
 /* ==========================================================================
-   7. Responsive Breakpoint (Single-column below 768px)
+   7. Responsive Layout Below 768px (Single Column)
    ========================================================================== */
 @media (max-width: 767px) {
-  .dashboard-shell,
+  .dashboard-shell {
+    grid-template-columns: 1fr;
+  }
+
   .cards-grid {
     grid-template-columns: 1fr;
   }
