@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SpendWise — Personal Finance Dashboard Shell</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="dashboard-shell">
+    <!-- Sidebar / Navigation Menu -->
+    <aside class="sidebar" aria-label="Primary Navigation">
+      <div class="brand-row">
+        <span class="brand-mark" aria-hidden="true">SW</span>
+        <div class="brand-copy">
+          <span class="brand-name">SpendWise</span>
+          <span class="brand-tag">Capstone Shell</span>
+        </div>
+      </div>
+
+      <nav class="nav-list">
+        <a href="#overview" class="nav-item is-active" aria-current="page">
+          <span class="nav-dot" aria-hidden="true"></span>
+          <span>Overview</span>
+        </a>
+        <a href="#categories" class="nav-item">
+          <span class="nav-dot" aria-hidden="true"></span>
+          <span>Categories</span>
+        </a>
+        <a href="#budgets" class="nav-item">
+          <span class="nav-dot" aria-hidden="true"></span>
+          <span>Budgets</span>
+        </a>
+        <a href="#savings" class="nav-item">
+          <span class="nav-dot" aria-hidden="true"></span>
+          <span>Savings Goals</span>
+        </a>
+        <a href="#reports" class="nav-item">
+          <span class="nav-dot" aria-hidden="true"></span>
+          <span>Reports</span>
+        </a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <span class="meta-label">Billing Cycle</span>
+        <strong class="meta-value">Nov 1 – Nov 30, 2026</strong>
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <div class="main-area">
+      <!-- Top Header -->
+      <header class="topbar" id="overview">
+        <div class="header-titles">
+          <h1>Spending Overview</h1>
+          <p class="subtitle">Monthly budget snapshot across core categories</p>
+        </div>
+
+        <div class="header-summary">
+          <div class="summary-pill">
+            <span class="pill-label">Monthly Budget</span>
+            <span class="pill-value">$3,200.00</span>
+          </div>
+          <div class="summary-pill is-accent">
+            <span class="pill-label">Spent to Date</span>
+            <span class="pill-value">$2,145.00</span>
+          </div>
+        </div>
+      </header>
+
+      <!-- Category Cards Grid -->
+      <main class="content" id="categories">
+        <section class="cards-grid" aria-label="Financial Categories">
+          <!-- 1. Food -->
+          <article class="category-card" tabindex="0">
+            <div class="card-header">
+              <span class="category-badge">Food &amp; Dining</span>
+              <span class="status-pill">68% used</span>
+            </div>
+            <div class="card-amount-row">
+              <strong class="spent-amount">$410.00</strong>
+              <span class="budget-limit">of $600.00</span>
+            </div>
+            <p class="card-note">Groceries, market produce, and weekly coffee runs.</p>
+          </article>
+
+          <!-- 2. Transport -->
+          <article class="category-card" tabindex="0">
+            <div class="card-header">
+              <span class="category-badge">Transport</span>
+              <span class="status-pill">72% used</span>
+            </div>
+            <div class="card-amount-row">
+              <strong class="spent-amount">$215.00</strong>
+              <span class="budget-limit">of $300.00</span>
+            </div>
+            <p class="card-note">Commuter transit passes, fuel top-ups, and rideshare.</p>
+          </article>
+
+          <!-- 3. Rent -->
+          <article class="category-card" tabindex="0">
+            <div class="card-header">
+              <span class="category-badge">Housing &amp; Rent</span>
+              <span class="status-pill">100% paid</span>
+            </div>
+            <div class="card-amount-row">
+              <strong class="spent-amount">$1,100.00</strong>
+              <span class="budget-limit">of $1,100.00</span>
+            </div>
+            <p class="card-note">Apartment lease payment settled on schedule.</p>
+          </article>
+
+          <!-- 4. Entertainment -->
+          <article class="category-card" tabindex="0">
+            <div class="card-header">
+              <span class="category-badge">Entertainment</span>
+              <span class="status-pill">54% used</span>
+            </div>
+            <div class="card-amount-row">
+              <strong class="spent-amount">$95.00</strong>
+              <span class="budget-limit">of $175.00</span>
+            </div>
+            <p class="card-note">Streaming subscriptions, cinema tickets, and weekend outings.</p>
+          </article>
+
+          <!-- 5. Savings -->
+          <article class="category-card" tabindex="0">
+            <div class="card-header">
+              <span class="category-badge">Savings</span>
+              <span class="status-pill">80% target</span>
+            </div>
+            <div class="card-amount-row">
+              <strong class="spent-amount">$400.00</strong>
+              <span class="budget-limit">of $500.00</span>
+            </div>
+            <p class="card-note">Emergency reserve and long-term goal allocation.</p>
+          </article>
+
+          <!-- 6. Utilities -->
+          <article class="category-card" tabindex="0">
+            <div class="card-header">
+              <span class="category-badge">Utilities</span>
+              <span class="status-pill">66% used</span>
+            </div>
+            <div class="card-amount-row">
+              <strong class="spent-amount">$165.00</strong>
+              <span class="budget-limit">of $250.00</span>
+            </div>
+            <p class="card-note">Electricity tokens, fiber internet, and water bill.</p>
+          </article>
+        </section>
+      </main>
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,365 @@
+/* ==========================================================================
+   1. Theme Variables (:root)
+   ========================================================================== */
+:root {
+  --color-brand: #0f766e;
+  --color-brand-soft: rgba(15, 118, 110, 0.12);
+  --color-accent: #d97706;
+  --color-accent-soft: rgba(217, 119, 6, 0.14);
+
+  --color-bg: #f4f6f8;
+  --color-surface: #ffffff;
+  --color-surface-elevated: #f9fafb;
+  --color-border: #e2e8f0;
+
+  --color-text-primary: #0f172a;
+  --color-text-secondary: #475569;
+
+  --shadow-card: 0 2px 8px rgba(15, 23, 42, 0.05);
+  --shadow-card-active: 0 10px 22px rgba(15, 23, 42, 0.12);
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --motion-fast: 180ms;
+}
+
+/* Stretch Goal: Override only :root variables for dark color scheme */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-brand: #2dd4bf;
+    --color-brand-soft: rgba(45, 212, 191, 0.14);
+    --color-accent: #fbbf24;
+    --color-accent-soft: rgba(251, 191, 36, 0.15);
+
+    --color-bg: #0b1120;
+    --color-surface: #111827;
+    --color-surface-elevated: #1e293b;
+    --color-border: #263248;
+
+    --color-text-primary: #f8fafc;
+    --color-text-secondary: #94a3b8;
+
+    --shadow-card: 0 2px 10px rgba(0, 0, 0, 0.35);
+    --shadow-card-active: 0 12px 24px rgba(0, 0, 0, 0.55);
+  }
+}
+
+/* ==========================================================================
+   2. Base Reset & Typography
+   ========================================================================== */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background-color: var(--color-bg);
+  color: var(--color-text-primary);
+  line-height: 1.5;
+  min-height: 100vh;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* ==========================================================================
+   3. Overall Page Layout (CSS Grid)
+   ========================================================================== */
+.dashboard-shell {
+  display: grid;
+  grid-template-columns: 250px minmax(0, 1fr);
+  min-height: 100vh;
+}
+
+.main-area {
+  display: grid;
+  grid-template-rows: auto 1fr;
+  min-width: 0;
+}
+
+.content {
+  padding: 1.5rem 2rem 2.5rem;
+}
+
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1.25rem;
+}
+
+/* ==========================================================================
+   4. Sidebar Navigation (Flexbox inside items & stack)
+   ========================================================================== */
+.sidebar {
+  background-color: var(--color-surface);
+  border-right: 1px solid var(--color-border);
+  padding: 1.5rem 1.25rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 2rem;
+}
+
+.brand-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.brand-mark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: var(--radius-sm);
+  background-color: var(--color-brand);
+  color: var(--color-surface);
+  font-weight: 700;
+  font-size: 0.95rem;
+  flex-shrink: 0;
+}
+
+.brand-copy {
+  display: flex;
+  flex-direction: column;
+}
+
+.brand-name {
+  font-weight: 700;
+  font-size: 1.05rem;
+  color: var(--color-text-primary);
+}
+
+.brand-tag {
+  font-size: 0.75rem;
+  color: var(--color-text-secondary);
+}
+
+.nav-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+  margin-bottom: auto;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.65rem 0.85rem;
+  border-radius: var(--radius-sm);
+  color: var(--color-text-secondary);
+  font-weight: 500;
+  font-size: 0.925rem;
+  transition: background-color var(--motion-fast) ease, color var(--motion-fast) ease;
+}
+
+.nav-item:hover,
+.nav-item:focus-visible {
+  background-color: var(--color-surface-elevated);
+  color: var(--color-text-primary);
+  outline: none;
+}
+
+.nav-item.is-active {
+  background-color: var(--color-brand-soft);
+  color: var(--color-brand);
+  font-weight: 600;
+}
+
+.nav-dot {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 999px;
+  background-color: currentColor;
+  flex-shrink: 0;
+}
+
+.sidebar-footer {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--color-border);
+}
+
+.meta-label {
+  font-size: 0.75rem;
+  color: var(--color-text-secondary);
+}
+
+.meta-value {
+  font-size: 0.85rem;
+  color: var(--color-text-primary);
+}
+
+/* ==========================================================================
+   5. Top Header (Flexbox)
+   ========================================================================== */
+.topbar {
+  background-color: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+  padding: 1.25rem 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.header-titles {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.header-titles h1 {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--color-text-primary);
+}
+
+.subtitle {
+  font-size: 0.9rem;
+  color: var(--color-text-secondary);
+}
+
+.header-summary {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.summary-pill {
+  display: flex;
+  flex-direction: column;
+  padding: 0.5rem 0.9rem;
+  border-radius: var(--radius-md);
+  background-color: var(--color-surface-elevated);
+  border: 1px solid var(--color-border);
+}
+
+.summary-pill.is-accent {
+  background-color: var(--color-accent-soft);
+  border-color: var(--color-accent);
+}
+
+.pill-label {
+  font-size: 0.72rem;
+  color: var(--color-text-secondary);
+}
+
+.pill-value {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--color-text-primary);
+}
+
+/* ==========================================================================
+   6. Category Cards (Flexbox content + Micro-interactions <= 250ms)
+   ========================================================================== */
+.category-card {
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: 1.25rem;
+  box-shadow: var(--shadow-card);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 0.85rem;
+  transition: transform var(--motion-fast) ease, box-shadow var(--motion-fast) ease, border-color var(--motion-fast) ease;
+}
+
+.category-card:hover,
+.category-card:focus-visible {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-card-active);
+  border-color: var(--color-brand);
+  outline: 2px solid var(--color-brand);
+  outline-offset: 2px;
+}
+
+.card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.category-badge {
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: var(--color-text-primary);
+}
+
+.status-pill {
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.2rem 0.55rem;
+  border-radius: 999px;
+  background-color: var(--color-brand-soft);
+  color: var(--color-brand);
+  white-space: nowrap;
+}
+
+.card-amount-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.spent-amount {
+  font-size: 1.45rem;
+  font-weight: 700;
+  color: var(--color-text-primary);
+}
+
+.budget-limit {
+  font-size: 0.85rem;
+  color: var(--color-text-secondary);
+}
+
+.card-note {
+  font-size: 0.85rem;
+  color: var(--color-text-secondary);
+}
+
+/* ==========================================================================
+   7. Responsive Breakpoint (Single-column below 768px)
+   ========================================================================== */
+@media (max-width: 767px) {
+  .dashboard-shell,
+  .cards-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .sidebar {
+    border-right: none;
+    border-bottom: 1px solid var(--color-border);
+    padding: 1rem 1.25rem;
+    gap: 1rem;
+  }
+
+  .nav-list {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+
+  .topbar {
+    padding: 1rem 1.25rem;
+  }
+
+  .content {
+    padding: 1rem 1.25rem 2rem;
+  }
+}
