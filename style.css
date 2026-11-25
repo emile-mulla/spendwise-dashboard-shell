@@ -6,6 +6,8 @@
   --color-brand-soft: rgba(15, 118, 110, 0.12);
   --color-accent: #d97706;
   --color-accent-soft: rgba(217, 119, 6, 0.14);
+  --color-danger: #dc2626;
+  --color-danger-soft: rgba(220, 38, 38, 0.12);
 
   --color-bg: #f4f6f8;
   --color-surface: #ffffff;
@@ -28,6 +30,8 @@
     --color-brand-soft: rgba(45, 212, 191, 0.14);
     --color-accent: #fbbf24;
     --color-accent-soft: rgba(251, 191, 36, 0.15);
+    --color-danger: #f87171;
+    --color-danger-soft: rgba(248, 113, 113, 0.16);
 
     --color-bg: #0b1120;
     --color-surface: #111827;
@@ -66,6 +70,15 @@ a {
   text-decoration: none;
 }
 
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+}
+
 /* ==========================================================================
    3. Overall Page Layout (CSS Grid)
    ========================================================================== */
@@ -83,6 +96,15 @@ a {
 
 .content {
   padding: 1.5rem 2rem 2.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.75rem;
+}
+
+.controls-grid {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 1.25rem;
 }
 
 .cards-grid {
@@ -213,7 +235,7 @@ a {
 .header-titles {
   display: flex;
   flex-direction: column;
-  gap: 0.2rem;
+  gap: 0.25rem;
 }
 
 .header-titles h1 {
@@ -223,7 +245,16 @@ a {
 
 .subtitle {
   font-size: 0.9rem;
-  color: var(--color-text-secondary);
+  font-weight: 600;
+  color: var(--color-brand);
+}
+
+.subtitle.is-warning {
+  color: var(--color-accent);
+}
+
+.subtitle.is-danger {
+  color: var(--color-danger);
 }
 
 .header-summary {
@@ -258,7 +289,142 @@ a {
 }
 
 /* ==========================================================================
-   6. Category Cards (Flexbox + 180ms Hover & Focus-Visible Micro-interactions)
+   6. Forms, Buttons & Section Headers
+   ========================================================================== */
+.panel-card {
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: 1.25rem;
+  box-shadow: var(--shadow-card);
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.panel-card h2,
+.section-heading h2 {
+  font-size: 1.05rem;
+  font-weight: 700;
+}
+
+.panel-hint,
+.section-meta {
+  font-size: 0.85rem;
+  color: var(--color-text-secondary);
+}
+
+.form-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 0.75rem;
+}
+
+.field-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  flex: 1 1 130px;
+}
+
+.field-group span {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+}
+
+input,
+select {
+  width: 100%;
+  padding: 0.55rem 0.75rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--color-border);
+  background-color: var(--color-surface-elevated);
+  color: var(--color-text-primary);
+  font: inherit;
+  font-size: 0.9rem;
+}
+
+input:focus-visible,
+select:focus-visible,
+.btn:focus-visible {
+  outline: 2px solid var(--color-brand);
+  outline-offset: 2px;
+}
+
+.btn {
+  padding: 0.58rem 1rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid transparent;
+  font: inherit;
+  font-size: 0.88rem;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: transform 180ms ease, opacity 180ms ease, background-color 180ms ease;
+}
+
+.btn:hover {
+  transform: translateY(-1px);
+}
+
+.btn-primary {
+  background-color: var(--color-brand);
+  color: var(--color-surface);
+}
+
+.btn-secondary {
+  background-color: var(--color-brand-soft);
+  color: var(--color-brand);
+  border-color: var(--color-brand);
+}
+
+.btn-ghost {
+  background-color: var(--color-surface);
+  color: var(--color-text-secondary);
+  border-color: var(--color-border);
+}
+
+.btn-delete {
+  padding: 0.3rem 0.6rem;
+  font-size: 0.78rem;
+  background-color: var(--color-danger-soft);
+  color: var(--color-danger);
+  border-radius: var(--radius-sm);
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.form-feedback {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--color-brand);
+  min-height: 1.25rem;
+}
+
+.form-feedback.is-error {
+  color: var(--color-danger);
+}
+
+.section-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-bottom: 0.9rem;
+}
+
+.filter-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+/* ==========================================================================
+   7. Category Cards (Flexbox + 180ms Hover & Focus-Visible Micro-interactions)
    ========================================================================== */
 .category-card {
   background-color: var(--color-surface);
@@ -304,6 +470,16 @@ a {
   white-space: nowrap;
 }
 
+.status-pill.is-warning {
+  background-color: var(--color-accent-soft);
+  color: var(--color-accent);
+}
+
+.status-pill.is-danger {
+  background-color: var(--color-danger-soft);
+  color: var(--color-danger);
+}
+
 .card-amount-row {
   display: flex;
   align-items: baseline;
@@ -327,13 +503,69 @@ a {
 }
 
 /* ==========================================================================
-   7. Responsive Layout Below 768px (Single Column)
+   8. Expense Ledger List
+   ========================================================================== */
+.expense-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.expense-item {
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: 0.85rem 1.1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.expense-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.expense-title {
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.expense-meta {
+  font-size: 0.8rem;
+  color: var(--color-text-secondary);
+}
+
+.expense-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+}
+
+.expense-amount {
+  font-weight: 700;
+  font-size: 0.98rem;
+}
+
+.empty-state {
+  background-color: var(--color-surface);
+  border: 1px dashed var(--color-border);
+  border-radius: var(--radius-md);
+  padding: 1.25rem;
+  text-align: center;
+  color: var(--color-text-secondary);
+  font-size: 0.9rem;
+}
+
+/* ==========================================================================
+   9. Responsive Layout Below 768px (Single Column)
    ========================================================================== */
 @media (max-width: 767px) {
-  .dashboard-shell {
-    grid-template-columns: 1fr;
-  }
-
+  .dashboard-shell,
+  .controls-grid,
   .cards-grid {
     grid-template-columns: 1fr;
   }

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>SpendWise — Personal Finance Dashboard</title>
+  <title>SpendWise — Interactive Personal Finance Dashboard</title>
   <link rel="stylesheet" href="style.css" />
   <script src="script.js" defer></script>
 </head>
@@ -15,7 +15,7 @@
         <span class="brand-mark" aria-hidden="true">SW</span>
         <div class="brand-copy">
           <span class="brand-name">SpendWise</span>
-          <span class="brand-tag">JS Foundation</span>
+          <span class="brand-tag">Interactive Tracker</span>
         </div>
       </div>
 
@@ -24,21 +24,17 @@
           <span class="nav-dot" aria-hidden="true"></span>
           <span>Overview</span>
         </a>
+        <a href="#controls" class="nav-item">
+          <span class="nav-dot" aria-hidden="true"></span>
+          <span>Add Expense</span>
+        </a>
         <a href="#categories" class="nav-item">
           <span class="nav-dot" aria-hidden="true"></span>
           <span>Categories</span>
         </a>
-        <a href="#budgets" class="nav-item">
+        <a href="#ledger" class="nav-item">
           <span class="nav-dot" aria-hidden="true"></span>
-          <span>Budgets</span>
-        </a>
-        <a href="#savings" class="nav-item">
-          <span class="nav-dot" aria-hidden="true"></span>
-          <span>Savings Goals</span>
-        </a>
-        <a href="#reports" class="nav-item">
-          <span class="nav-dot" aria-hidden="true"></span>
-          <span>Reports</span>
+          <span>Recent Expenses</span>
         </a>
       </nav>
 
@@ -54,95 +50,103 @@
       <header class="topbar" id="overview">
         <div class="header-titles">
           <h1>Spending Overview</h1>
-          <p class="subtitle">Monthly budget snapshot across core categories</p>
+          <p class="subtitle" id="budget-status-banner" role="status" aria-live="polite">
+            Within Budget — $815.00 remaining
+          </p>
         </div>
 
         <div class="header-summary">
           <div class="summary-pill">
             <span class="pill-label">Monthly Budget</span>
-            <span class="pill-value">$3,200.00</span>
+            <span class="pill-value" id="total-budget-display">$3,200.00</span>
           </div>
           <div class="summary-pill is-accent">
             <span class="pill-label">Spent to Date</span>
-            <span class="pill-value">$2,145.00</span>
+            <span class="pill-value" id="total-spent-display">$2,385.00</span>
+          </div>
+          <div class="summary-pill">
+            <span class="pill-label">Remaining</span>
+            <span class="pill-value" id="remaining-balance-display">$815.00</span>
           </div>
         </div>
       </header>
 
-      <!-- Category Cards Grid -->
-      <main class="content" id="categories">
-        <section class="cards-grid" aria-label="Financial Categories">
-          <article class="category-card" tabindex="0">
-            <div class="card-header">
-              <span class="category-badge">Food &amp; Dining</span>
-              <span class="status-pill">68% used</span>
+      <!-- Main Interactive Workspace -->
+      <main class="content">
+        <!-- Interactive Controls: Update Budget & Log Expense -->
+        <section class="controls-grid" id="controls" aria-label="Budget and Expense Controls">
+          <form class="panel-card" id="budget-form">
+            <h2>Set Monthly Budget</h2>
+            <p class="panel-hint">Adjust your overall monthly cap to recalculate remaining balance.</p>
+            <div class="form-row">
+              <label class="field-group" for="budget-input">
+                <span>Monthly Budget ($)</span>
+                <input type="number" id="budget-input" min="1" step="0.01" value="3200" required />
+              </label>
+              <button type="submit" class="btn btn-secondary">Update Budget</button>
             </div>
-            <div class="card-amount-row">
-              <strong class="spent-amount">$410.00</strong>
-              <span class="budget-limit">of $600.00</span>
-            </div>
-            <p class="card-note">Groceries, market produce, and weekly coffee runs.</p>
-          </article>
+          </form>
 
-          <article class="category-card" tabindex="0">
-            <div class="card-header">
-              <span class="category-badge">Transport</span>
-              <span class="status-pill">72% used</span>
-            </div>
-            <div class="card-amount-row">
-              <strong class="spent-amount">$215.00</strong>
-              <span class="budget-limit">of $300.00</span>
-            </div>
-            <p class="card-note">Commuter transit passes, fuel top-ups, and rideshare.</p>
-          </article>
+          <form class="panel-card" id="expense-form">
+            <h2>Log New Expense</h2>
+            <p class="panel-hint">Add an expense record to update category totals and alerts.</p>
+            <div class="form-row">
+              <label class="field-group" for="expense-title">
+                <span>Description</span>
+                <input type="text" id="expense-title" placeholder="e.g., Weekly Groceries" required />
+              </label>
 
-          <article class="category-card" tabindex="0">
-            <div class="card-header">
-              <span class="category-badge">Housing &amp; Rent</span>
-              <span class="status-pill">100% paid</span>
-            </div>
-            <div class="card-amount-row">
-              <strong class="spent-amount">$1,100.00</strong>
-              <span class="budget-limit">of $1,100.00</span>
-            </div>
-            <p class="card-note">Apartment lease payment settled on schedule.</p>
-          </article>
+              <label class="field-group" for="expense-category">
+                <span>Category</span>
+                <select id="expense-category" required>
+                  <option value="Food & Dining">Food &amp; Dining</option>
+                  <option value="Transport">Transport</option>
+                  <option value="Housing & Rent">Housing &amp; Rent</option>
+                  <option value="Entertainment">Entertainment</option>
+                  <option value="Savings">Savings</option>
+                  <option value="Utilities">Utilities</option>
+                </select>
+              </label>
 
-          <article class="category-card" tabindex="0">
-            <div class="card-header">
-              <span class="category-badge">Entertainment</span>
-              <span class="status-pill">54% used</span>
-            </div>
-            <div class="card-amount-row">
-              <strong class="spent-amount">$95.00</strong>
-              <span class="budget-limit">of $175.00</span>
-            </div>
-            <p class="card-note">Streaming subscriptions, cinema tickets, and weekend outings.</p>
-          </article>
+              <label class="field-group" for="expense-amount">
+                <span>Amount ($)</span>
+                <input type="number" id="expense-amount" min="0.01" step="0.01" placeholder="25.00" required />
+              </label>
 
-          <article class="category-card" tabindex="0">
-            <div class="card-header">
-              <span class="category-badge">Savings</span>
-              <span class="status-pill">80% target</span>
+              <button type="submit" class="btn btn-primary">Add Expense</button>
             </div>
-            <div class="card-amount-row">
-              <strong class="spent-amount">$400.00</strong>
-              <span class="budget-limit">of $500.00</span>
-            </div>
-            <p class="card-note">Emergency reserve and long-term goal allocation.</p>
-          </article>
+            <p class="form-feedback" id="form-feedback" role="status" aria-live="polite"></p>
+          </form>
+        </section>
 
-          <article class="category-card" tabindex="0">
-            <div class="card-header">
-              <span class="category-badge">Utilities</span>
-              <span class="status-pill">66% used</span>
+        <!-- Dynamic Category Cards Grid -->
+        <section id="categories" aria-label="Financial Categories">
+          <div class="section-heading">
+            <h2>Category Breakdown</h2>
+            <span class="section-meta" id="category-count-label">6 Categories</span>
+          </div>
+          <div class="cards-grid" id="cards-grid"></div>
+        </section>
+
+        <!-- Dynamic Expense Records List -->
+        <section class="ledger-section" id="ledger" aria-label="Expense Records">
+          <div class="section-heading">
+            <h2>Expense Records</h2>
+            <div class="filter-controls">
+              <label for="category-filter" class="sr-only">Filter by category</label>
+              <select id="category-filter">
+                <option value="All">All Categories</option>
+                <option value="Food & Dining">Food &amp; Dining</option>
+                <option value="Transport">Transport</option>
+                <option value="Housing & Rent">Housing &amp; Rent</option>
+                <option value="Entertainment">Entertainment</option>
+                <option value="Savings">Savings</option>
+                <option value="Utilities">Utilities</option>
+              </select>
+              <button type="button" class="btn btn-ghost" id="reset-demo-btn">Reset Sample Data</button>
             </div>
-            <div class="card-amount-row">
-              <strong class="spent-amount">$165.00</strong>
-              <span class="budget-limit">of $250.00</span>
-            </div>
-            <p class="card-note">Electricity tokens, fiber internet, and water bill.</p>
-          </article>
+          </div>
+          <ul class="expense-list" id="expense-list"></ul>
         </section>
       </main>
     </div>

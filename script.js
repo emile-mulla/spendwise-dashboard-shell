@@ -1,116 +1,279 @@
 // ============================================================================
-// SpendWise — JavaScript Foundation
+// SpendWise — Interactive Budgeting Application
+// Demonstrates: Arrays, Loops, Conditionals, DOM Manipulation, Event Listeners
 // ============================================================================
 
-const APP_NAME = "SpendWise";
-const CURRENCY_SYMBOL = "$";
-const DEFAULT_MONTHLY_BUDGET = 3200;
-const DEFAULT_EXPENSES = 2145;
+const CATEGORY_CONFIG = [
+  { name: "Food & Dining", limit: 600, note: "Groceries, market produce, and weekly coffee runs." },
+  { name: "Transport", limit: 300, note: "Commuter transit passes, fuel top-ups, and rideshare." },
+  { name: "Housing & Rent", limit: 1100, note: "Apartment lease payment settled on schedule." },
+  { name: "Entertainment", limit: 175, note: "Streaming subscriptions, cinema tickets, and weekend outings." },
+  { name: "Savings", limit: 500, note: "Emergency reserve and long-term goal allocation." },
+  { name: "Utilities", limit: 250, note: "Electricity tokens, fiber internet, and water bill." }
+];
 
-let budgetPeriod = "November 2026";
-let monthlyBudget = DEFAULT_MONTHLY_BUDGET;
-let totalExpenses = DEFAULT_EXPENSES;
+const INITIAL_EXPENSES = [
+  { id: 1, title: "Monthly Apartment Rent", category: "Housing & Rent", amount: 1100, date: "2026-11-01" },
+  { id: 2, title: "Supermarket Groceries", category: "Food & Dining", amount: 265, date: "2026-11-05" },
+  { id: 3, title: "Emergency Fund Transfer", category: "Savings", amount: 400, date: "2026-11-07" },
+  { id: 4, title: "Commuter Pass & Fuel", category: "Transport", amount: 215, date: "2026-11-10" },
+  { id: 5, title: "Electricity & Fiber Internet", category: "Utilities", amount: 165, date: "2026-11-12" },
+  { id: 6, title: "Fresh Market & Coffee", category: "Food & Dining", amount: 145, date: "2026-11-16" },
+  { id: 7, title: "Streaming & Cinema Night", category: "Entertainment", amount: 95, date: "2026-11-20" }
+];
+
+let monthlyBudget = 3200;
+let expenses = [...INITIAL_EXPENSES];
+let nextExpenseId = INITIAL_EXPENSES.length + 1;
+
+// DOM Element References
+const totalBudgetDisplay = document.getElementById("total-budget-display");
+const totalSpentDisplay = document.getElementById("total-spent-display");
+const remainingBalanceDisplay = document.getElementById("remaining-balance-display");
+const budgetStatusBanner = document.getElementById("budget-status-banner");
+const cardsGrid = document.getElementById("cards-grid");
+const expenseList = document.getElementById("expense-list");
+const budgetForm = document.getElementById("budget-form");
+const budgetInput = document.getElementById("budget-input");
+const expenseForm = document.getElementById("expense-form");
+const expenseTitleInput = document.getElementById("expense-title");
+const expenseCategorySelect = document.getElementById("expense-category");
+const expenseAmountInput = document.getElementById("expense-amount");
+const formFeedback = document.getElementById("form-feedback");
+const categoryFilterSelect = document.getElementById("category-filter");
+const resetDemoBtn = document.getElementById("reset-demo-btn");
+
+function formatCurrency(value) {
+  const sign = value < 0 ? "-" : "";
+  return `${sign}$${Math.abs(value).toFixed(2)}`;
+}
 
 /**
- * Prompts the user for a non-negative number and returns a fallback value
- * if the prompt is canceled, blank, negative, or not a finite number.
+ * Uses a loop to calculate total spending across all stored expense records.
  */
-function promptForPositiveNumber(message, fallbackValue) {
-  const rawInput = prompt(message, String(fallbackValue));
+function calculateTotalSpent(expenseRecords) {
+  let total = 0;
+  for (let i = 0; i < expenseRecords.length; i += 1) {
+    total += expenseRecords[i].amount;
+  }
+  return total;
+}
 
-  if (rawInput === null || rawInput.trim() === "") {
-    return fallbackValue;
+/**
+ * Uses a loop and conditional check to sum expenses for one specific category.
+ */
+function calculateCategoryTotal(categoryName, expenseRecords) {
+  let categorySum = 0;
+  for (const record of expenseRecords) {
+    if (record.category === categoryName) {
+      categorySum += record.amount;
+    }
+  }
+  return categorySum;
+}
+
+/**
+ * Evaluates overall budget health using conditional statements and updates the header DOM.
+ */
+function updateOverviewSummary() {
+  const totalSpent = calculateTotalSpent(expenses);
+  const remaining = monthlyBudget - totalSpent;
+  const usageRatio = monthlyBudget > 0 ? totalSpent / monthlyBudget : 1;
+
+  totalBudgetDisplay.textContent = formatCurrency(monthlyBudget);
+  totalSpentDisplay.textContent = formatCurrency(totalSpent);
+  remainingBalanceDisplay.textContent = formatCurrency(remaining);
+
+  budgetStatusBanner.classList.remove("is-warning", "is-danger");
+
+  if (remaining < 0) {
+    budgetStatusBanner.textContent = `Over Budget by ${formatCurrency(Math.abs(remaining))} — review category spending`;
+    budgetStatusBanner.classList.add("is-danger");
+  } else if (usageRatio >= 0.8) {
+    budgetStatusBanner.textContent = `Approaching Limit (${Math.round(usageRatio * 100)}% used) — ${formatCurrency(remaining)} remaining`;
+    budgetStatusBanner.classList.add("is-warning");
+  } else {
+    budgetStatusBanner.textContent = `Within Budget (${Math.round(usageRatio * 100)}% used) — ${formatCurrency(remaining)} remaining`;
+  }
+}
+
+/**
+ * Loops through CATEGORY_CONFIG and dynamically renders all category cards into the DOM.
+ */
+function renderCategoryCards() {
+  cardsGrid.innerHTML = "";
+
+  for (const category of CATEGORY_CONFIG) {
+    const spent = calculateCategoryTotal(category.name, expenses);
+    const percentUsed = category.limit > 0 ? Math.round((spent / category.limit) * 100) : 0;
+
+    let pillClass = "status-pill";
+    let statusLabel = `${percentUsed}% used`;
+
+    if (spent > category.limit) {
+      pillClass = "status-pill is-danger";
+      statusLabel = `${percentUsed}% (Over)`;
+    } else if (percentUsed >= 80) {
+      pillClass = "status-pill is-warning";
+      statusLabel = `${percentUsed}% used`;
+    }
+
+    const card = document.createElement("article");
+    card.className = "category-card";
+    card.tabIndex = 0;
+    card.innerHTML = `
+      <div class="card-header">
+        <span class="category-badge">${category.name}</span>
+        <span class="${pillClass}">${statusLabel}</span>
+      </div>
+      <div class="card-amount-row">
+        <strong class="spent-amount">${formatCurrency(spent)}</strong>
+        <span class="budget-limit">of ${formatCurrency(category.limit)}</span>
+      </div>
+      <p class="card-note">${category.note}</p>
+    `;
+
+    cardsGrid.appendChild(card);
+  }
+}
+
+/**
+ * Filters expenses by selected category and loops through matching records to render the list.
+ */
+function renderExpenseList() {
+  const selectedCategory = categoryFilterSelect.value;
+  const visibleExpenses = [];
+
+  for (const item of expenses) {
+    if (selectedCategory === "All" || item.category === selectedCategory) {
+      visibleExpenses.push(item);
+    }
   }
 
-  const parsed = Number(rawInput.trim());
-  if (!Number.isFinite(parsed) || parsed < 0) {
-    return fallbackValue;
+  expenseList.innerHTML = "";
+
+  if (visibleExpenses.length === 0) {
+    const emptyItem = document.createElement("li");
+    emptyItem.className = "empty-state";
+    emptyItem.textContent = "No expense records match this category filter.";
+    expenseList.appendChild(emptyItem);
+    return;
   }
 
-  return parsed;
-}
+  for (let i = visibleExpenses.length - 1; i >= 0; i -= 1) {
+    const record = visibleExpenses[i];
+    const listItem = document.createElement("li");
+    listItem.className = "expense-item";
 
-/**
- * Calculates remaining budget balance from budget and expenses.
- */
-function calculateRemainingBalance(budget, expenses) {
-  return budget - expenses;
-}
+    listItem.innerHTML = `
+      <div class="expense-info">
+        <span class="expense-title">${record.title}</span>
+        <span class="expense-meta">${record.category} • ${record.date}</span>
+      </div>
+      <div class="expense-actions">
+        <span class="expense-amount">${formatCurrency(record.amount)}</span>
+        <button type="button" class="btn-delete" data-id="${record.id}" aria-label="Delete ${record.title}">
+          Remove
+        </button>
+      </div>
+    `;
 
-/**
- * Calculates the percentage of the budget used, rounded to one decimal place.
- */
-function calculateSpendingPercentage(budget, expenses) {
-  if (budget <= 0) {
-    return 0;
+    expenseList.appendChild(listItem);
   }
-  return Number(((expenses / budget) * 100).toFixed(1));
 }
 
 /**
- * Determines spending standing based on remaining balance.
+ * Re-renders all dashboard sections whenever state changes.
  */
-function getBudgetStatus(remainingBalance) {
-  if (remainingBalance > 0) {
-    return "Within Budget";
-  }
-  if (remainingBalance === 0) {
-    return "Budget Fully Allocated";
-  }
-  return "Over Budget";
+function refreshDashboard() {
+  updateOverviewSummary();
+  renderCategoryCards();
+  renderExpenseList();
 }
 
-/**
- * Formats numbers into a consistent currency string.
- */
-function formatCurrency(amount) {
-  return `${CURRENCY_SYMBOL}${amount.toFixed(2)}`;
+function showFeedback(message, isError = false) {
+  formFeedback.textContent = message;
+  formFeedback.classList.toggle("is-error", isError);
 }
 
-/**
- * Prints a clearly labeled budget report to the browser console.
- */
-function printBudgetReport(period, budget, expenses, remainingBalance, percentageUsed, status) {
-  console.log(`=== ${APP_NAME} Budget Summary (${period}) ===`);
-  console.log(`Monthly Budget:     ${formatCurrency(budget)}`);
-  console.log(`Total Expenses:     ${formatCurrency(expenses)}`);
-  console.log(`Remaining Balance:  ${formatCurrency(remainingBalance)}`);
-  console.log(`Budget Used:        ${percentageUsed}%`);
-  console.log(`Budget Status:      ${status}`);
-  console.log("==========================================");
-}
+// Event Listener 1: Update Monthly Budget
+budgetForm.addEventListener("submit", (event) => {
+  event.preventDefault();
+  const newBudget = Number(budgetInput.value);
 
-/**
- * Coordinates input collection, budget calculations, and console reporting.
- */
-function startSpendWiseFoundation() {
-  const periodInput = prompt("Enter the budget period (e.g., November 2026):", budgetPeriod);
-  if (periodInput && periodInput.trim() !== "") {
-    budgetPeriod = periodInput.trim();
+  if (!Number.isFinite(newBudget) || newBudget <= 0) {
+    showFeedback("Please enter a monthly budget greater than $0.", true);
+    return;
   }
 
-  monthlyBudget = promptForPositiveNumber(
-    "Enter your monthly budget amount:",
-    DEFAULT_MONTHLY_BUDGET
-  );
+  monthlyBudget = newBudget;
+  showFeedback(`Monthly budget updated to ${formatCurrency(monthlyBudget)}.`);
+  refreshDashboard();
+});
 
-  totalExpenses = promptForPositiveNumber(
-    "Enter your total expenses so far:",
-    DEFAULT_EXPENSES
-  );
+// Event Listener 2: Add New Expense Record
+expenseForm.addEventListener("submit", (event) => {
+  event.preventDefault();
 
-  const remainingBalance = calculateRemainingBalance(monthlyBudget, totalExpenses);
-  const percentageUsed = calculateSpendingPercentage(monthlyBudget, totalExpenses);
-  const status = getBudgetStatus(remainingBalance);
+  const title = expenseTitleInput.value.trim();
+  const category = expenseCategorySelect.value;
+  const amount = Number(expenseAmountInput.value);
 
-  printBudgetReport(
-    budgetPeriod,
-    monthlyBudget,
-    totalExpenses,
-    remainingBalance,
-    percentageUsed,
-    status
-  );
-}
+  if (title === "" || !Number.isFinite(amount) || amount <= 0) {
+    showFeedback("Provide a valid description and an amount greater than $0.", true);
+    return;
+  }
 
-startSpendWiseFoundation();
+  const today = new Date().toISOString().slice(0, 10);
+  expenses.push({
+    id: nextExpenseId++,
+    title,
+    category,
+    amount,
+    date: today
+  });
+
+  expenseForm.reset();
+  showFeedback(`Added "${title}" (${formatCurrency(amount)}) to ${category}.`);
+  refreshDashboard();
+});
+
+// Event Listener 3: Filter Expense List by Category
+categoryFilterSelect.addEventListener("change", () => {
+  renderExpenseList();
+});
+
+// Event Listener 4: Remove an Expense Record via Event Delegation
+expenseList.addEventListener("click", (event) => {
+  const deleteButton = event.target.closest(".btn-delete");
+  if (!deleteButton) {
+    return;
+  }
+
+  const targetId = Number(deleteButton.dataset.id);
+  const updatedExpenses = [];
+
+  for (const record of expenses) {
+    if (record.id !== targetId) {
+      updatedExpenses.push(record);
+    }
+  }
+
+  expenses = updatedExpenses;
+  showFeedback("Expense record removed.");
+  refreshDashboard();
+});
+
+// Event Listener 5: Reset Sample Data
+resetDemoBtn.addEventListener("click", () => {
+  monthlyBudget = 3200;
+  budgetInput.value = "3200";
+  expenses = [...INITIAL_EXPENSES];
+  nextExpenseId = INITIAL_EXPENSES.length + 1;
+  categoryFilterSelect.value = "All";
+  showFeedback("Dashboard restored to initial sample records.");
+  refreshDashboard();
+});
+
+// Initial Page Render
+refreshDashboard();

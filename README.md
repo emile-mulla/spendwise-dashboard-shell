@@ -1,47 +1,38 @@
-# SpendWise — Personal Finance & Budget Tracker
+# SpendWise — Interactive Personal Finance Dashboard
 
-**SpendWise** is a personal finance dashboard built progressively in the PLP Web Development course. It combines a responsive dashboard layout (`index.html` and `style.css`) with foundational JavaScript budget-processing logic (`script.js`).
+**SpendWise** is an interactive personal finance and budget tracking dashboard built with **HTML5**, **CSS3 (Grid, Flexbox, Custom Properties)**, and **Vanilla JavaScript**.
 
-## What SpendWise Does
+## What Improvements Were Made to SpendWise This Week
 
-- Displays a responsive dashboard layout featuring a navigation sidebar, spending overview header, and six financial category cards (*Food & Dining*, *Transport*, *Housing & Rent*, *Entertainment*, *Savings*, and *Utilities*).
-- Prompts the user for a budget period, monthly budget, and total expenses, calculates the remaining balance and spending percentage, and logs a clear summary to the browser console.
+- Replaced static hardcoded category cards and browser `prompt()` popups with live on-page interactive forms to update the monthly budget and log new expense entries.
+- Added dynamic category card rendering, live budget health alerts in the header, and a filterable expense ledger where individual records can be added or removed in real time.
 
-## JavaScript Concepts Implemented
+## How Conditionals Are Used in the Project
 
-- **Variables & Data Types**: Uses `const` for immutable configuration/defaults and `let` for mutable state (`budgetPeriod`, `monthlyBudget`, `totalExpenses`), working with strings and numbers.
-- **User Input & Validation**: Reads input through `prompt()`, trims whitespace, converts strings to numbers using `Number()`, and safely falls back to defaults on cancel, empty input, or invalid numbers.
-- **Arithmetic & Conditionals**: Computes `budget - expenses`, calculates spending percentage, and evaluates budget standing (`Within Budget`, `Budget Fully Allocated`, or `Over Budget`).
-- **Functions**: Organizes input handling, calculations, formatting, and console reporting into reusable functions.
+- **Budget Health Evaluation (`updateOverviewSummary`)**: Uses `if / else if / else` statements to check whether `remaining < 0` (*Over Budget* danger alert), `usageRatio >= 0.8` (*Approaching Limit* warning), or spending is safely *Within Budget*.
+- **Category Threshold Styling (`renderCategoryCards`)**: Evaluates `spent > category.limit` and `percentUsed >= 80` to apply warning or over-budget status pills to individual category cards.
+- **Input Validation & Filtering**: Validates form submissions before mutating state and filters records conditionally inside `renderExpenseList()`.
 
-## How Variables Are Used
+## How Arrays Are Used to Store Data
 
-- **`const` variables** (`APP_NAME`, `CURRENCY_SYMBOL`, `DEFAULT_MONTHLY_BUDGET`, `DEFAULT_EXPENSES`) store fixed labels and fallback numbers that should not be reassigned.
-- **`let` variables** (`budgetPeriod`, `monthlyBudget`, `totalExpenses`) store session values that update when the user enters new budgeting details.
+- `CATEGORY_CONFIG` stores an array of category objects (`name`, `limit`, and `note`) that define the six dashboard categories.
+- `expenses` stores an array of expense record objects (`id`, `title`, `category`, `amount`, and `date`), allowing new records to be appended via `.push()` and removed cleanly without relying on separate individual variables per expense.
 
-## How User Input Is Collected
+## How the DOM Is Updated
 
-- `startSpendWiseFoundation()` prompts the user for the budget period, monthly budget, and total expenses.
-- `promptForPositiveNumber(message, fallbackValue)` validates each numeric prompt and returns `fallbackValue` if the user cancels, submits an empty string, or enters a negative or non-numeric value.
+- `updateOverviewSummary()` updates `#total-budget-display`, `#total-spent-display`, `#remaining-balance-display`, and `#budget-status-banner` via `.textContent` and `.classList`.
+- `renderCategoryCards()` clears `#cards-grid` and loops over `CATEGORY_CONFIG` using `document.createElement("article")` to render updated totals and percentage badges.
+- `renderExpenseList()` dynamically builds `<li>` rows inside `#expense-list` (or displays an empty-state message when no records match the active filter).
 
-## How Calculations Are Performed
+## How User Interactions Are Handled Through Events
 
-- `calculateRemainingBalance(budget, expenses)` subtracts `expenses` from `budget` (`budget - expenses`).
-- `calculateSpendingPercentage(budget, expenses)` computes `((expenses / budget) * 100)` rounded to one decimal place (returning `0` when `budget` is zero or negative).
-- `getBudgetStatus(remainingBalance)` returns `"Within Budget"` if `remainingBalance > 0`, `"Budget Fully Allocated"` if `remainingBalance === 0`, or `"Over Budget"` if `remainingBalance < 0`.
+- **`submit` on `#budget-form`**: Updates `monthlyBudget` and recalculates remaining funds without reloading the page (`event.preventDefault()`).
+- **`submit` on `#expense-form`**: Validates inputs, pushes a new expense object into `expenses`, resets the form, and triggers `refreshDashboard()`.
+- **`change` on `#category-filter`**: Re-renders the expense list for the selected category.
+- **`click` on `#expense-list` (Event Delegation)**: Detects clicks on `.btn-delete` buttons using `event.target.closest(".btn-delete")` and removes the matching record by `data-id`.
+- **`click` on `#reset-demo-btn`**: Restores the initial budget and sample records.
 
-## How Functions Help Organize the Code
+## Challenges Encountered and How They Were Resolved
 
-Each function handles a single responsibility so the logic stays readable and reusable:
-- `promptForPositiveNumber` handles prompt input validation.
-- `calculateRemainingBalance`, `calculateSpendingPercentage`, and `getBudgetStatus` isolate financial calculations and status checks.
-- `formatCurrency` formats numeric totals consistently.
-- `printBudgetReport` formats and prints labeled console output.
-- `startSpendWiseFoundation` runs the full workflow in sequence.
-
-## Repository Files
-
-- `index.html` — Dashboard markup and `<script src="script.js" defer></script>`.
-- `style.css` — CSS Grid and Flexbox layout, `:root` custom properties, `@media (prefers-color-scheme: dark)`, single-column responsive layout below `768px`, and `180ms` card hover/focus transitions.
-- `script.js` — Variables, input prompts, budget calculations, reusable functions, and console output.
-- `README.md` — Project documentation.
+- **Keeping header totals, category cards, and the expense ledger synchronized**: Resolved by centralizing state updates into a single `refreshDashboard()` function called after every add, delete, budget update, or reset event.
+- **Handling delete clicks on dynamically rendered list items**: Resolved by attaching a single delegated `click` listener on `#expense-list` and reading each button's `data-id` attribute rather than re-binding listeners on every render.
