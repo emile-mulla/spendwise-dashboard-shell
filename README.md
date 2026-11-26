@@ -1,38 +1,42 @@
-# SpendWise — Interactive Personal Finance Dashboard
-https://spendwise-emile.netlify.app/
-**SpendWise** is an interactive personal finance and budget tracking dashboard built with **HTML5**, **CSS3 (Grid, Flexbox, Custom Properties)**, and **Vanilla JavaScript**.
+# SpendWise — Interactive Personal Finance & Budget Tracker
 
-## What Improvements Were Made to SpendWise This Week
+## Project Description
 
-- Replaced static hardcoded category cards and browser `prompt()` popups with live on-page interactive forms to update the monthly budget and log new expense entries.
-- Added dynamic category card rendering, live budget health alerts in the header, and a filterable expense ledger where individual records can be added or removed in real time.
+**SpendWise** is a responsive personal finance and budget tracking web application. It provides an interactive dashboard where users can set a monthly budget, log expenses across six core categories (*Food & Dining*, *Transport*, *Housing & Rent*, *Entertainment*, *Savings*, and *Utilities*), filter records by category, delete entries, and monitor real-time spending alerts and remaining balance directly in the browser.
 
-## How Conditionals Are Used in the Project
+## Technologies Used
 
-- **Budget Health Evaluation (`updateOverviewSummary`)**: Uses `if / else if / else` statements to check whether `remaining < 0` (*Over Budget* danger alert), `usageRatio >= 0.8` (*Approaching Limit* warning), or spending is safely *Within Budget*.
-- **Category Threshold Styling (`renderCategoryCards`)**: Evaluates `spent > category.limit` and `percentUsed >= 80` to apply warning or over-budget status pills to individual category cards.
-- **Input Validation & Filtering**: Validates form submissions before mutating state and filters records conditionally inside `renderExpenseList()`.
+- **HTML5**: Semantic dashboard structure, accessible forms, ARIA live regions, and landmarks.
+- **CSS3**: CSS Grid and Flexbox layouts, `:root` custom properties, automatic dark mode via `@media (prefers-color-scheme: dark)`, single-column responsiveness below `768px`, and `180ms` card hover/focus transitions.
+- **Vanilla JavaScript (ES6+)**: Arrays, loops, conditional budget health checks, DOM manipulation, and event delegation.
+- **Git & GitHub**: Version control and public source code hosting.
+- **Netlify**: Static web hosting, custom subdomain configuration, and continuous deployment.
 
-## How Arrays Are Used to Store Data
+## GitHub Repository Information
 
-- `CATEGORY_CONFIG` stores an array of category objects (`name`, `limit`, and `note`) that define the six dashboard categories.
-- `expenses` stores an array of expense record objects (`id`, `title`, `category`, `amount`, and `date`), allowing new records to be appended via `.push()` and removed cleanly without relying on separate individual variables per expense.
+- **Repository Name:** `spendwise-dashboard-shell`
+- **Repository URL:** [https://github.com/emile-mulla/spendwise-dashboard-shell](https://github.com/emile-mulla/spendwise-dashboard-shell)
+- **Primary Branch:** `main`
 
-## How the DOM Is Updated
+## Live Netlify Website URL
 
-- `updateOverviewSummary()` updates `#total-budget-display`, `#total-spent-display`, `#remaining-balance-display`, and `#budget-status-banner` via `.textContent` and `.classList`.
-- `renderCategoryCards()` clears `#cards-grid` and loops over `CATEGORY_CONFIG` using `document.createElement("article")` to render updated totals and percentage badges.
-- `renderExpenseList()` dynamically builds `<li>` rows inside `#expense-list` (or displays an empty-state message when no records match the active filter).
+- **Live Site:** [https://spendwise-emile.netlify.app](https://spendwise-emile.netlify.app)
 
-## How User Interactions Are Handled Through Events
+## Deployment Process Summary
 
-- **`submit` on `#budget-form`**: Updates `monthlyBudget` and recalculates remaining funds without reloading the page (`event.preventDefault()`).
-- **`submit` on `#expense-form`**: Validates inputs, pushes a new expense object into `expenses`, resets the form, and triggers `refreshDashboard()`.
-- **`change` on `#category-filter`**: Re-renders the expense list for the selected category.
-- **`click` on `#expense-list` (Event Delegation)**: Detects clicks on `.btn-delete` buttons using `event.target.closest(".btn-delete")` and removes the matching record by `data-id`.
-- **`click` on `#reset-demo-btn`**: Restores the initial budget and sample records.
+1. Organized `index.html`, `style.css`, `script.js`, and `README.md` at the root of the public GitHub repository using relative asset paths (`href="style.css"` and `src="script.js"`).
+2. Connected `emile-mulla/spendwise-dashboard-shell` to Netlify via **Import from Git** and deployed the `main` branch as a static HTML/CSS/JS site.
+3. Configured a custom project subdomain (`spendwise-emile.netlify.app`) in Netlify project settings.
+4. Verified Continuous Deployment by updating the sidebar badge in `index.html` to `Live on Netlify`, pushing the commit to `main`, and confirming Netlify automatically built and published the update.
+5. Tested the live production URL across desktop and mobile viewports to confirm all styles, scripts, and interactive controls work without console errors.
 
-## Challenges Encountered and How They Were Resolved
+## Challenges Encountered During Deployment
 
-- **Keeping header totals, category cards, and the expense ledger synchronized**: Resolved by centralizing state updates into a single `refreshDashboard()` function called after every add, delete, budget update, or reset event.
-- **Handling delete clicks on dynamically rendered list items**: Resolved by attaching a single delegated `click` listener on `#expense-list` and reading each button's `data-id` attribute rather than re-binding listeners on every render.
+- **Temporary DNS/network interruption during `git push`:** Encountered `Could not resolve host: github.com` when pushing documentation updates; resolved by verifying internet connectivity and re-running `git add`, `git commit`, and `git push origin main`.
+- **Browser caching after continuous deployment updates:** Used a hard refresh (`Ctrl+Shift+R`) after Netlify marked each new deploy as **Published** to verify the latest changes loaded immediately.
+
+## Lessons Learned
+
+- Keeping `index.html` and linked assets (`style.css`, `script.js`) at the repository root with relative paths prevents `404` asset errors on Netlify.
+- Connecting GitHub to Netlify automates Continuous Deployment (CI/CD), turning every `git push` to `main` into an instant live update.
+- Always inspect the public GitHub repository directly in the browser after pushing to confirm all files are complete and up to date before submitting.
